@@ -55,3 +55,9 @@ jlink {
 jlinkZip {
     group = 'distribution'
 }
+
+processResources {
+    from('src/main/resources') {
+        into 'build/resources/main'
+    }
+}

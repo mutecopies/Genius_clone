@@ -1,0 +1,63 @@
+/* Style for the header */
+.header {
+    -fx-background-color: #f39c12; /* Orange color */
+    -fx-padding: 10px;
+    -fx-alignment: top-right;
+}
+
+.header .label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.header .button {
+    -fx-font-size: 16px;
+    -fx-background-color: #e74c3c; /* Red color */
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
+.header .button:hover {
+    -fx-background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Style for the body (trending songs, etc.) */
+.body {
+    -fx-background-color: #f1c40f; /* Yellow background */
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+.body .label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50; /* Dark text color */
+}
+
+/* Style for the profile dialog content */
+.profile-content {
+    -fx-background-color: #ecf0f1; /* Light gray background */
+    -fx-padding: 20px;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+}
+
+.profile-content .label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.profile-content .button {
+    -fx-font-size: 14px;
+    -fx-background-color: #3498db; /* Blue color */
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
+.profile-content .button:hover {
+    -fx-background-color: #2980b9; /* Darker blue on hover */
+}
