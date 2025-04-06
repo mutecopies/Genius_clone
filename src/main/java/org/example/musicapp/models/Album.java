@@ -1,4 +1,6 @@
 package org.example.musicapp.models;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,63 +11,75 @@ public class Album {
     private Date releaseDate;  // Release date of the album
     private List<Song> tracklist;  // Ordered list of songs in the album
 
-    // Constructor to initialize album
+    // Constructor
     public Album(String title, Artist artist, Date releaseDate) {
-        if (title == null || title.isEmpty()) {
+        if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Album title cannot be null or empty.");
         }
+
         this.title = title;
         this.artist = artist;
-        this.releaseDate = releaseDate != null ? releaseDate : new Date(); // Default to current date if releaseDate is null
+        this.releaseDate = (releaseDate != null) ? releaseDate : new Date(); // Use current date if null
         this.tracklist = new ArrayList<>();
     }
 
-    // Add a song to the album, ensuring no duplicates
+    // Add song to album
     public void addSong(Song song) {
         if (song == null) {
             System.out.println("Song cannot be null.");
             return;
         }
+
         if (!tracklist.contains(song)) {
-            tracklist.add(song);  // Add the song to the tracklist
+            tracklist.add(song);
             System.out.println("Song added to album: " + song.getTitle());
         } else {
             System.out.println("This song is already in the album: " + song.getTitle());
         }
     }
 
-    // Getters
+    // Remove song from album
+    public boolean removeSong(Song song) {
+        return tracklist.remove(song);
+    }
+
+    // Get album title
     public String getTitle() {
         return title;
     }
 
+    // Get artist
     public Artist getArtist() {
         return artist;
     }
 
+    // Get release date
     public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public List<Song> getTracklist() {
+    // ✅ Unified getter: getSongs instead of getTracklist for clarity
+    public List<Song> getSongs() {
         return tracklist;
     }
 
-    // Optional: Get a specific song from the tracklist by index
+    // Get song by index
     public Song getSong(int index) {
         if (index >= 0 && index < tracklist.size()) {
             return tracklist.get(index);
         }
-        return null;  // If the index is out of bounds
+        return null;
     }
 
-    // Display album information (title, artist, release date, and tracklist)
-    public String albumInfo() {
+    // Generate full album info
+    public String getAlbumInfo() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+
         StringBuilder info = new StringBuilder();
         info.append("Album Title: ").append(title).append("\n")
-                .append("Artist: ").append(artist.getName()).append("\n")
-                .append("Release Date: ").append(releaseDate).append("\n")
-                .append("Tracklist: \n");
+                .append("Artist: ").append(artist != null ? artist.getName() : "Unknown").append("\n")
+                .append("Release Date: ").append(formatter.format(releaseDate)).append("\n")
+                .append("Tracklist:\n");
 
         if (tracklist.isEmpty()) {
             info.append("No songs in this album yet.\n");
@@ -78,11 +92,9 @@ public class Album {
         return info.toString();
     }
 
-    // Display a formatted list of all songs in the album
-    public void displayTracklist() {
-        System.out.println("Tracklist for " + title + ":");
-        for (int i = 0; i < tracklist.size(); i++) {
-            System.out.println((i + 1) + ". " + tracklist.get(i).getTitle());
-        }
+    // For UI display (e.g. ListView)
+    @Override
+    public String toString() {
+        return title + " (" + new SimpleDateFormat("yyyy").format(releaseDate) + ")";
     }
 }

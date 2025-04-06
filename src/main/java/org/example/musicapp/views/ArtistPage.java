@@ -31,31 +31,36 @@ public class ArtistPage {
         Label nameLabel = new Label("Artist: " + artist.getName());
         nameLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        // Songs and Albums List
-        Label songsAndAlbumsLabel = new Label("Songs and Albums");
-        songsAndAlbumsLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        VBox songsAndAlbums = new VBox(10);
-
-        // Displaying the songs the artist created
+        // Songs section
+        Label songsLabel = new Label("Songs");
+        songsLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        VBox songList = new VBox(10);
         for (Song song : artist.getSongs()) {
-            Label songLabel = new Label("Song: " + song.getTitle());
-            songsAndAlbums.getChildren().add(songLabel);
+            Label songLabel = new Label("- " + song.getTitle());
+            songList.getChildren().add(songLabel);
         }
 
-        // Displaying the albums the artist created
+        // Albums section with clickable links
+        Label albumsLabel = new Label("Albums");
+        albumsLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        VBox albumList = new VBox(10);
         for (Album album : artist.getAlbums()) {
-            Label albumLabel = new Label("Album: " + album.getTitle());
-            songsAndAlbums.getChildren().add(albumLabel);
+            Hyperlink albumLink = new Hyperlink(album.getTitle());
+            albumLink.setOnAction(e -> {
+                AlbumPage albumPage = new AlbumPage(primaryStage, album);
+                primaryStage.setScene(albumPage.getScene());
+            });
+            albumList.getChildren().add(albumLink);
         }
 
-        // Add all elements to the layout
+        VBox songsAndAlbums = new VBox(20, songsLabel, songList, albumsLabel, albumList);
+
         artistLayout.getChildren().addAll(
                 nameLabel,
-                songsAndAlbumsLabel,
                 songsAndAlbums
         );
 
         artistLayout.setAlignment(Pos.TOP_CENTER);
-        artistLayout.setStyle("-fx-background-color: #f8f8f8;");
+        artistLayout.setStyle("-fx-background-color: #f8f8f8; -fx-padding: 20px;");
     }
 }

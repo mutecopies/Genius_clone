@@ -65,18 +65,21 @@ public class LoginPage {
                 String email = userData[2];
                 String role = userData[4];
 
-                // Create the user or artist object
-                User currentUser = new User(name, age, email, storedHashedPassword, role);
-
-                // Redirect based on user role
                 if ("User".equalsIgnoreCase(role)) {
+                    // Create a regular user
+                    User currentUser = new User(name, age, email, storedHashedPassword, role);
+
                     // Redirect to HomePage after successful login
                     HomePage homePage = new HomePage(primaryStage, currentUser);
                     primaryStage.setScene(homePage.getScene());
                     primaryStage.show();
+
                 } else if ("Artist".equalsIgnoreCase(role)) {
-                    // Redirect to ArtistPage for artists
-                    ArtistPage artistPage = new ArtistPage(primaryStage, (Artist) currentUser); // Cast to Artist if necessary
+                    // Create an artist
+                    Artist currentArtist = new Artist(name, age, email, storedHashedPassword, role);
+
+                    // Redirect to ArtistPage after successful login
+                    ArtistPage artistPage = new ArtistPage(primaryStage, currentArtist);
                     primaryStage.setScene(artistPage.getScene());
                     primaryStage.show();
                 }
