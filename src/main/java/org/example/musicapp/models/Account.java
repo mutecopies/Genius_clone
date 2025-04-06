@@ -1,8 +1,6 @@
 package org.example.musicapp.models;
+import org.example.musicapp.models.Role;
 // Enum to define user roles
-enum Role {
-    USER, ARTIST, ADMIN
-}
 
 // Base Account class
 abstract class Account {

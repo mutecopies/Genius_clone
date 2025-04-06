@@ -1,6 +1,5 @@
 package org.example.musicapp.views;
 
-
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -9,7 +8,7 @@ import javafx.geometry.Pos;
 import org.example.musicapp.models.Song;
 import org.example.musicapp.models.User;
 import org.example.musicapp.models.Artist;
-import org.example.musicapp.models.Song;
+import org.example.musicapp.models.Role;
 
 public class SongPage {
 
@@ -39,7 +38,11 @@ public class SongPage {
         Label titleLabel = new Label("Song Title: " + currentSong.getTitle());
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-        Label artistLabel = new Label("Artist: " + currentSong.getArtist());
+        String artistName = currentSong.getArtists().isEmpty()
+                ? "Unknown Artist"
+                : currentSong.getArtists().get(0).getName();
+
+        Label artistLabel = new Label("Artist: " + artistName);
         artistLabel.setStyle("-fx-font-size: 16px; -fx-font-style: italic;");
 
         // Song Lyrics
@@ -74,13 +77,21 @@ public class SongPage {
         Button followArtistButton = new Button("Follow Artist");
         followArtistButton.setOnAction(e -> followArtist());
 
-        songLayout.getChildren().addAll(titleLabel, artistLabel, lyricsLabel, lyricsArea, commentsLabel, commentsArea, commentButton, followArtistButton);
+        songLayout.getChildren().addAll(
+                titleLabel,
+                artistLabel,
+                lyricsLabel,
+                lyricsArea,
+                commentsLabel,
+                commentsArea,
+                commentButton,
+                followArtistButton
+        );
         songLayout.setAlignment(Pos.CENTER);
         songLayout.setStyle("-fx-background-color: #f0f0f0;");
     }
 
     private void editLyrics() {
-        // Implement the editing functionality for artists
         TextInputDialog editDialog = new TextInputDialog(currentSong.getLyrics());
         editDialog.setTitle("Edit Lyrics");
         editDialog.setHeaderText("Edit the lyrics for " + currentSong.getTitle());
@@ -88,33 +99,32 @@ public class SongPage {
 
         editDialog.showAndWait().ifPresent(newLyrics -> {
             currentSong.setLyrics(newLyrics);
-            // You might want to save this edit to a file or database
             System.out.println("Lyrics updated: " + newLyrics);
         });
     }
 
     private void suggestEdit() {
-        // Implement the functionality for suggesting an edit (for users)
         TextInputDialog suggestDialog = new TextInputDialog();
         suggestDialog.setTitle("Suggest Edit");
         suggestDialog.setHeaderText("Suggest an edit for " + currentSong.getTitle());
         suggestDialog.setContentText("Suggested Edit:");
 
         suggestDialog.showAndWait().ifPresent(suggestedEdit -> {
-            // Handle suggested edit, maybe notify the artist
             System.out.println("Suggested Edit: " + suggestedEdit);
         });
     }
 
     private void postComment(String comment) {
-        // Post the user's comment
         System.out.println("New Comment: " + comment);
-        // You could save comments to a database or file here
+        // Save to file or DB if needed
     }
 
     private void followArtist() {
-        // Implement follow artist functionality
-        System.out.println("Following artist: " + currentSong.getArtist());
-        // You might want to store the follow in a list or database
+        if (!currentSong.getArtists().isEmpty()) {
+            String name = currentSong.getArtists().get(0).getName();
+            System.out.println("Following artist: " + name);
+        } else {
+            System.out.println("No artist to follow.");
+        }
     }
 }

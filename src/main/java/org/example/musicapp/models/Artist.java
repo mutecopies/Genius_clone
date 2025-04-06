@@ -1,6 +1,7 @@
 package org.example.musicapp.models;
 import java.util.ArrayList;
 import java.util.List;
+import org.example.musicapp.models.Role;
 
 public class Artist extends Account {
     private List<Song> songs = new ArrayList<>();

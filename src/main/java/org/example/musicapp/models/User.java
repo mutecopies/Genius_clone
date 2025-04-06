@@ -2,6 +2,7 @@ package org.example.musicapp.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.example.musicapp.models.Role;
 
 public class User extends Account {
     private List<Artist> followedArtists = new ArrayList<>(); // Store Artist objects instead of names

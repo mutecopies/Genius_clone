@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import org.example.musicapp.models.User;
+import org.example.musicapp.models.Artist;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -64,18 +65,20 @@ public class LoginPage {
                 String email = userData[2];
                 String role = userData[4];
 
+                // Create the user or artist object
                 User currentUser = new User(name, age, email, storedHashedPassword, role);
 
+                // Redirect based on user role
                 if ("User".equalsIgnoreCase(role)) {
                     // Redirect to HomePage after successful login
                     HomePage homePage = new HomePage(primaryStage, currentUser);
-                    primaryStage.setScene(homePage.getScene()); // Set the scene from HomePage
-                    primaryStage.show(); // Show the new scene
+                    primaryStage.setScene(homePage.getScene());
+                    primaryStage.show();
                 } else if ("Artist".equalsIgnoreCase(role)) {
-                    ArtistPage artistPage = new ArtistPage(primaryStage);
-                    Scene artistScene = new Scene(artistPage.getArtistLayout(), 600, 400);
-                    primaryStage.setScene(artistScene);
-                    primaryStage.show(); // Show the artist page
+                    // Redirect to ArtistPage for artists
+                    ArtistPage artistPage = new ArtistPage(primaryStage, (Artist) currentUser); // Cast to Artist if necessary
+                    primaryStage.setScene(artistPage.getScene());
+                    primaryStage.show();
                 }
             } else {
                 showAlert("Invalid username or password.");
