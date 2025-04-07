@@ -7,7 +7,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
+import java.util.ArrayList;
+import java.util.List;
 import org.example.musicapp.models.User;
+import org.example.musicapp.models.Artist;
+import org.example.musicapp.models.Song;
+import org.example.musicapp.models.Album;
+import org.example.musicapp.utils.MusicLibrary;
 
 public class HomePage {
 
@@ -27,81 +33,80 @@ public class HomePage {
     }
 
     private void setupHomePage() {
-        // Header - username in the top right
+        // Header with Welcome + Profile + Search
+        VBox topSection = new VBox(10);
+        topSection.setStyle("-fx-background-color: #f39c12; -fx-padding: 10px;");
+
+        // Header bar (Welcome + Profile Button)
         HBox header = new HBox(20);
         Label welcomeLabel = new Label("Welcome, " + user.getName());
-        Button userButton = new Button("Your Profile");
-        userButton.setStyle("-fx-font-size: 16px; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10px 20px;");
+        welcomeLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
 
-        // Add debug log to ensure button is clicked
+        Button userButton = new Button("Your Profile");
+        userButton.setStyle("-fx-font-size: 16px; -fx-background-color: #e74c3c; -fx-text-fill: white;");
         userButton.setOnAction(e -> {
-            System.out.println("Your Profile button clicked!");
-            showUserStatus();
+            UserPage userPage = new UserPage(primaryStage, user);
+            primaryStage.setScene(new Scene(userPage.getUserLayout(), 800, 600));
         });
 
         header.getChildren().addAll(welcomeLabel, userButton);
-        header.setAlignment(Pos.TOP_RIGHT);
-        header.setStyle("-fx-background-color: #f39c12; -fx-padding: 10px;");
+        header.setAlignment(Pos.CENTER_RIGHT);
 
-        // Body - "Trending Songs" and "Albums" (Mockup)
+        // Search Bar
+        HBox searchBar = new HBox(10);
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search for artist, song, or album...");
+        searchField.setPrefWidth(300);
+
+        Button searchButton = new Button("Search");
+        searchButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+
+        ListView<String> searchResults = new ListView<>();
+
+        searchButton.setOnAction(e -> {
+            String query = searchField.getText().toLowerCase();
+            searchResults.getItems().clear();
+
+            // Replace these with actual data from MusicLibrary
+            List<Artist> artists = MusicLibrary.getAllArtists();
+            List<Album> albums = MusicLibrary.getAllAlbums();
+            List<Song> songs = MusicLibrary.getAllSongs();
+
+            for (Artist artist : artists) {
+                if (artist.getName().toLowerCase().contains(query)) {
+                    searchResults.getItems().add("Artist: " + artist.getName());
+                }
+            }
+            for (Album album : albums) {
+                if (album.getTitle().toLowerCase().contains(query)) {
+                    searchResults.getItems().add("Album: " + album.getTitle());
+                }
+            }
+            for (Song song : songs) {
+                if (song.getTitle().toLowerCase().contains(query)) {
+                    searchResults.getItems().add("Song: " + song.getTitle());
+                }
+            }
+
+            if (searchResults.getItems().isEmpty()) {
+                searchResults.getItems().add("No results found.");
+            }
+        });
+
+        searchBar.getChildren().addAll(searchField, searchButton);
+        searchBar.setAlignment(Pos.CENTER);
+
+        topSection.getChildren().addAll(header, searchBar);
+
+        // Body content (Trending Songs + Search Results)
         VBox body = new VBox(20);
-        Label trendingLabel = new Label("Trending Songs");
-        trendingLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        body.getChildren().add(trendingLabel);
+        body.setStyle("-fx-padding: 20px;");
+        body.getChildren().addAll(new Label("🔥 Trending Songs"), searchResults);
 
-        // Mockup for trending songs (replace with actual data later)
-        for (int i = 1; i <= 5; i++) {
-            Label songLabel = new Label("Song " + i);
-            body.getChildren().add(songLabel);
-        }
-
-        // Set up main layout
-        homeLayout.setTop(header);
+        // Final layout
+        homeLayout.setTop(topSection);
         homeLayout.setCenter(body);
         homeLayout.setStyle("-fx-background-color: #f1c40f;");
-    }
-
-    private void showUserStatus() {
-        // Stylish User Profile Popup
-        Dialog<Void> profileDialog = new Dialog<>();
-        profileDialog.setTitle("Your Profile");
-        profileDialog.setHeaderText("Hello, " + user.getName() + "!");
-
-        // Styling the content of the profile card
-        VBox profileContent = new VBox(20);
-        profileContent.setAlignment(Pos.CENTER);
-        profileContent.setStyle("-fx-background-color: #ecf0f1; -fx-padding: 20px; -fx-background-radius: 15px; -fx-border-radius: 15px;");
-
-        // Profile Image (Placeholder)
-        ImageView profileImageView = new ImageView(new Image("https://www.w3schools.com/w3images/avatar2.png"));
-        profileImageView.setFitWidth(100);
-        profileImageView.setFitHeight(100);
-        profileImageView.setStyle("-fx-border-radius: 50%;");
-
-        // User Information Labels
-        Label nameLabel = new Label("Name: " + user.getName());
-        Label emailLabel = new Label("Email: " + user.getEmail());
-        Label ageLabel = new Label("Age: " + user.getAge());
-
-        // Style the labels
-        nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        emailLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #34495e;");
-        ageLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #34495e;");
-
-        // Adding the profile picture and labels to the content box
-        profileContent.getChildren().addAll(profileImageView, nameLabel, emailLabel, ageLabel);
-
-        // Buttons (Optional, e.g., Edit Profile)
-        Button editProfileButton = new Button("Edit Profile");
-        editProfileButton.setStyle("-fx-font-size: 14px; -fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10px 20px; -fx-border-radius: 5px;");
-        profileContent.getChildren().add(editProfileButton);
-
-        // Set the content and show the dialog
-        profileDialog.getDialogPane().setContent(profileContent);
-        profileDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-
-        // This will ensure the dialog is shown on the correct thread
-        profileDialog.showAndWait();
     }
 
 }

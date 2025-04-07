@@ -1,7 +1,8 @@
 package org.example.musicapp.models;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.example.musicapp.models.Role;
+import org.example.musicapp.database.ArtistDatabase;
 
 public class Artist extends Account {
     private List<Song> songs = new ArrayList<>();
@@ -12,16 +13,25 @@ public class Artist extends Account {
         super(name, age, email, username, password, Role.ARTIST);
     }
 
-    // Artists can create songs
+    // Artists can create songs (both singles and album songs)
     public void createSong(Song song) {
         songs.add(song);
         System.out.println("New song added: " + song.getTitle());
     }
 
-    // Artists can create albums
-    public void createAlbum(Album album) {
-        albums.add(album);
-        System.out.println("New album added: " + album.getTitle());
+    // Create a single (song without an album)
+    public void createSingle(String title, String lyrics, String genre, List<String> tags, String releaseDate) {
+        Song single = new Song(title, lyrics, new ArrayList<>(), genre, tags, releaseDate);
+        songs.add(single);
+        System.out.println("Single created: " + single.getTitle());
+    }
+
+    // Add an album (if album doesn't already exist)
+    public void addAlbum(Album album) {
+        if (album != null && !albums.contains(album)) {
+            albums.add(album);
+            System.out.println("New album added: " + album.getTitle());
+        }
     }
 
     // Edit song lyrics (only for songs created by the artist)
@@ -42,7 +52,6 @@ public class Artist extends Account {
 
     public void rejectEdit(EditRequest editRequest) {
         System.out.println("Rejecting edit for: " + editRequest.getSong().getTitle());
-        // No changes are made to the song lyrics
     }
 
     // Add a follower
@@ -53,13 +62,20 @@ public class Artist extends Account {
         }
     }
 
+    // Remove a follower
+    public void removeFollower(User user) {
+        if (followers.contains(user)) {
+            followers.remove(user);
+            System.out.println(user.getUsername() + " unfollowed " + getName());
+        }
+    }
+
     @Override
     public void viewProfile() {
         System.out.println("Artist Profile: " + getName());
         System.out.println("Age: " + getAge());
         System.out.println("Email: " + getEmail());
         System.out.println("Most Popular Songs: ");
-        // Assuming you have a method to sort or find popular songs
         for (int i = 0; i < Math.min(3, songs.size()); i++) {
             System.out.println("- " + songs.get(i).getTitle());
         }
@@ -71,9 +87,14 @@ public class Artist extends Account {
         for (Album album : albums) {
             System.out.println("- " + album.getTitle());
         }
+
+        System.out.println("Followers: ");
+        for (User follower : followers) {
+            System.out.println("- " + follower.getUsername());
+        }
     }
 
-    // Getter methods for songs and albums
+    // Getters and Setters
     public List<Song> getSongs() {
         return songs;
     }
@@ -82,7 +103,15 @@ public class Artist extends Account {
         return albums;
     }
 
-    // Getter method for followers
+    public static Artist getArtistByName(String name) {
+        for (Artist artist : ArtistDatabase.getAllArtists()) {
+            if (artist.getName().equalsIgnoreCase(name)) {
+                return artist;
+            }
+        }
+        return null;
+    }
+
     public List<User> getFollowers() {
         return followers;
     }

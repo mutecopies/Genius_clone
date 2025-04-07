@@ -52,12 +52,17 @@ public class UserPage {
         userInfoBox.getChildren().addAll(nameLabel, emailLabel, ageLabel);
 
         // Followed Artists Section
-        Label followedArtistsLabel = sectionLabel("🎵 Followed Artists");
-        ListView<String> followedArtistsList = new ListView<>();
-        followedArtistsList.setMaxHeight(100);
-        followedArtistsList.setMaxWidth(400);
-        for (Artist artist : user.getFollowedArtists()) {
-            followedArtistsList.getItems().add(artist.getName());
+        Label followedArtistsLabel = sectionLabel("🎵 Artists You Follow");
+        VBox followedArtistsBox = new VBox(5);
+        followedArtistsBox.setMaxWidth(400);
+
+        List<Artist> followed = user.getFollowedArtists();
+        if (followed.isEmpty()) {
+            followedArtistsBox.getChildren().add(styledLabel("You are not following any artists yet."));
+        } else {
+            for (Artist artist : followed) {
+                followedArtistsBox.getChildren().add(styledLabel("• " + artist.getName()));
+            }
         }
 
         // Comments Section
@@ -80,14 +85,24 @@ public class UserPage {
             commentsBox.getChildren().add(styledLabel("No comments yet."));
         }
 
+        // Back Button (to go back to the HomePage)
+        Button backButton = new Button("Back");
+        backButton.setStyle("-fx-font-size: 16px; -fx-background-color: #e74c3c; -fx-text-fill: white;");
+        backButton.setOnAction(e -> {
+            // Go back to the HomePage
+            HomePage homePage = new HomePage(primaryStage, user);
+            primaryStage.setScene(homePage.getScene());
+        });
+
         // Add everything to layout
         userLayout.getChildren().addAll(
                 titleLabel,
                 userInfoBox,
                 followedArtistsLabel,
-                followedArtistsList,
+                followedArtistsBox,
                 commentsLabel,
-                commentsBox
+                commentsBox,
+                backButton // Now the back button is at the bottom
         );
     }
 
