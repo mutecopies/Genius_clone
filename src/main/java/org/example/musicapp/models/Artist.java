@@ -1,5 +1,8 @@
 package org.example.musicapp.models;
 
+import javafx.stage.Stage;
+import org.example.musicapp.views.ArtistPage;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.example.musicapp.database.ArtistDatabase;
@@ -94,7 +97,7 @@ public class Artist extends Account {
         }
     }
 
-    // Getters and Setters
+    // Getter methods
     public List<Song> getSongs() {
         return songs;
     }
@@ -103,6 +106,18 @@ public class Artist extends Account {
         return albums;
     }
 
+    public List<User> getFollowers() {
+        return followers;
+    }
+
+    // Go to profile page for Artist
+    public void goToProfilePage(Stage primaryStage) {
+        // Create the ArtistPage and pass the artist instance
+        ArtistPage artistPage = new ArtistPage(primaryStage, this);
+        primaryStage.setScene(artistPage.getScene()); // Set the scene to the artist's profile page
+    }
+
+    // Static method to get artist by name
     public static Artist getArtistByName(String name) {
         for (Artist artist : ArtistDatabase.getAllArtists()) {
             if (artist.getName().equalsIgnoreCase(name)) {
@@ -110,9 +125,5 @@ public class Artist extends Account {
             }
         }
         return null;
-    }
-
-    public List<User> getFollowers() {
-        return followers;
     }
 }

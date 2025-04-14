@@ -5,7 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;  // Import Parent class
+import javafx.scene.Parent;
 import org.example.musicapp.models.Artist;
 import org.example.musicapp.models.Song;
 import java.util.Arrays;
@@ -77,8 +77,14 @@ public class CreateSinglePage {
             if (!title.isEmpty() && !lyrics.isEmpty() && !genre.isEmpty() && !releaseDate.isEmpty()) {
                 // Call the createSingle method from Artist
                 artist.createSingle(title, lyrics, genre, tags, releaseDate);
+
+                // Show a success alert
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Song created successfully!", ButtonType.OK);
                 alert.showAndWait();
+
+                // After creating the song, navigate back to the ArtistPage
+                ArtistPage artistPage = new ArtistPage(primaryStage, artist);
+                primaryStage.setScene(artistPage.getScene());
             }
         });
 
