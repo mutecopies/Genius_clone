@@ -14,19 +14,23 @@ public class SignUpPage {
 
     private Stage primaryStage;
     private VBox signUpLayout;
+    private Scene signUpScene;
 
     public SignUpPage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.signUpLayout = new VBox(15);
         setupSignUpPage();
+        this.signUpScene = new Scene(signUpLayout, 400, 350);
     }
 
-    public VBox getSignUpLayout() {
-        return signUpLayout;
+    public Scene getScene() {
+        return signUpScene;
     }
 
     private void setupSignUpPage() {
-        // Fields
+        Label titleLabel = new Label("Sign Up");
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: #2c3e50;");
+
         TextField usernameField = new TextField();
         usernameField.setPromptText("Username");
 
@@ -39,59 +43,81 @@ public class SignUpPage {
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Password");
 
-        // Role Selection
         ComboBox<String> roleBox = new ComboBox<>();
-        roleBox.getItems().addAll("User", "Artist");
+        roleBox.getItems().addAll("User", "Artist", "Admin");
         roleBox.setPromptText("Select Role");
+        roleBox.getSelectionModel().selectFirst(); // Default to "User" to avoid null
 
         Button signUpButton = new Button("Sign Up");
-        signUpButton.setOnAction(e -> {
-            String username = usernameField.getText().trim();
-            String ageText = ageField.getText().trim();
-            String email = emailField.getText().trim();
-            String password = passwordField.getText().trim();
-            String role = roleBox.getValue();
+        signUpButton.setStyle("-fx-font-size: 14px; -fx-background-color: #2ecc71; -fx-text-fill: white;");
+        signUpButton.setOnAction(e -> handleSignUp(
+                usernameField.getText().trim(),
+                ageField.getText().trim(),
+                emailField.getText().trim(),
+                passwordField.getText(),
+                roleBox.getValue()
+        ));
 
-            if (username.isEmpty() || ageText.isEmpty() || email.isEmpty() || password.isEmpty() || role == null) {
-                showAlert(Alert.AlertType.ERROR, "Please fill all fields.");
-                return;
-            }
-
-            int age;
-            try {
-                age = Integer.parseInt(ageText);
-            } catch (NumberFormatException ex) {
-                showAlert(Alert.AlertType.ERROR, "Invalid age.");
-                return;
-            }
-
-            if (userExists(username)) {
-                showAlert(Alert.AlertType.ERROR, "Username already taken.");
-                return;
-            }
-
-            String hashedPassword = hashPassword(password);
-
-            // Save to file
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
-                String userLine = username + "," + age + "," + email + "," + hashedPassword + "," + role;
-                writer.write(userLine);
-                writer.newLine();
-                showAlert(Alert.AlertType.INFORMATION, "Sign-up successful!");
-                switchToLoginPage();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Failed to save user.");
-            }
-        });
-
-        // Back to login
         Button backButton = new Button("Back to Login");
+        backButton.setStyle("-fx-font-size: 12px; -fx-background-color: #bdc3c7;");
         backButton.setOnAction(e -> switchToLoginPage());
 
-        signUpLayout.getChildren().addAll(usernameField, ageField, emailField, passwordField, roleBox, signUpButton, backButton);
+        signUpLayout.getChildren().addAll(
+                titleLabel,
+                usernameField, ageField, emailField, passwordField, roleBox,
+                signUpButton, backButton
+        );
         signUpLayout.setAlignment(Pos.CENTER);
-        signUpLayout.setStyle("-fx-background-color: #ecf0f1;");
+        signUpLayout.setStyle("-fx-background-color: #ecf0f1; -fx-padding: 30px;");
+    }
+
+    private void handleSignUp(String username, String ageText, String email, String password, String role) {
+        if (username.isEmpty() || ageText.isEmpty() || email.isEmpty() || password.isEmpty() || role == null || role.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Please fill all the fields and select a role.");
+            return;
+        }
+
+        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.\\w+$")) {
+            showAlert(Alert.AlertType.ERROR, "Invalid email format.");
+            return;
+        }
+
+        int age;
+        try {
+            age = Integer.parseInt(ageText);
+            if (age <= 0) throw new NumberFormatException();
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Please enter a valid age.");
+            return;
+        }
+
+        if (userExists(username)) {
+            showAlert(Alert.AlertType.ERROR, "Username already taken.");
+            return;
+        }
+
+        // Restrict admin sign-up to a specific email
+        if ("Admin".equals(role) && !email.equalsIgnoreCase("admin@example.com")) {
+            showAlert(Alert.AlertType.ERROR, "Only the email 'admin@example.com' is allowed to register as Admin.");
+            return;
+        }
+
+        String hashedPassword = hashPassword(password);
+        if (hashedPassword == null) {
+            showAlert(Alert.AlertType.ERROR, "Failed to hash password.");
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
+            String userData = username + "," + age + "," + email + "," + hashedPassword + "," + role;
+            writer.write(userData);
+            writer.newLine();
+            showAlert(Alert.AlertType.INFORMATION, "Sign-up successful! You can now log in.");
+            switchToLoginPage();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Failed to save user.");
+        }
     }
 
     private boolean userExists(String username) {
@@ -99,12 +125,12 @@ public class SignUpPage {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] userData = line.trim().split(",");
-                if (userData.length > 0 && userData[0].equals(username)) {
+                if (userData.length >= 1 && userData[0].equalsIgnoreCase(username)) {
                     return true;
                 }
             }
         } catch (IOException e) {
-            // If file doesn't exist, assume user doesn't exist yet
+            // File might not exist yet, which is fine
         }
         return false;
     }
@@ -112,9 +138,9 @@ public class SignUpPage {
     private String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(password.getBytes());
+            byte[] hashedBytes = digest.digest(password.getBytes());
             StringBuilder hex = new StringBuilder();
-            for (byte b : hash) {
+            for (byte b : hashedBytes) {
                 hex.append(String.format("%02x", b));
             }
             return hex.toString();
@@ -126,6 +152,7 @@ public class SignUpPage {
 
     private void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type);
+        alert.setTitle(type == Alert.AlertType.INFORMATION ? "Success" : "Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
@@ -133,7 +160,6 @@ public class SignUpPage {
 
     private void switchToLoginPage() {
         LoginPage loginPage = new LoginPage(primaryStage);
-        Scene loginScene = new Scene(loginPage.getLoginLayout(), 400, 300);
-        primaryStage.setScene(loginScene);
+        primaryStage.setScene(loginPage.getScene());
     }
 }

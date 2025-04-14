@@ -3,7 +3,7 @@ import org.example.musicapp.models.Role;
 // Enum to define user roles
 
 // Base Account class
-abstract class Account {
+abstract public class Account {
     private String name;
     private int age;
     private String email;

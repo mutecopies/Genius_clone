@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 import java.util.List;
 import org.example.musicapp.models.User;
 import org.example.musicapp.models.Artist;
+import org.example.musicapp.models.Admin;
 import org.example.musicapp.models.Song;
 import org.example.musicapp.models.Album;
 import org.example.musicapp.utils.MusicLibrary;
@@ -16,54 +17,99 @@ import org.example.musicapp.utils.MusicLibrary;
 public class HomePage {
 
     private Stage primaryStage;
-    private Object account; // Accepts either User or Artist
+    private Object account; // Accepts User, Artist, or Admin
     private BorderPane homeLayout;
 
     public HomePage(Stage primaryStage, Object account) {
         this.primaryStage = primaryStage;
         this.account = account;
         this.homeLayout = new BorderPane();
-        setupHomePage();
+        initializeHomePage();
     }
 
     public Scene getScene() {
         return new Scene(homeLayout, 800, 600);
     }
 
-    private void setupHomePage() {
-        // Header section
+    private void initializeHomePage() {
+        // Top Section (Header + Search Bar)
+        VBox topSection = createTopSection();
+
+        // Body Section (Trending Songs + Search Results)
+        VBox bodySection = createBodySection();
+
+        // Setup the layout
+        homeLayout.setTop(topSection);
+        homeLayout.setCenter(bodySection);
+        homeLayout.setStyle("-fx-background-color: #f1c40f;"); // Background color for the page
+    }
+
+    private VBox createTopSection() {
         VBox topSection = new VBox(10);
         topSection.setStyle("-fx-background-color: #f39c12; -fx-padding: 10px;");
 
-        HBox header = new HBox(20);
+        HBox header = createHeader();
 
-        String name = (account instanceof User) ? ((User) account).getName() : ((Artist) account).getName();
+        HBox searchBar = createSearchBar();
+
+        topSection.getChildren().addAll(header, searchBar);
+        return topSection;
+    }
+
+    private HBox createHeader() {
+        HBox header = new HBox(20);
+        header.setAlignment(Pos.CENTER_RIGHT);
+
+        String name = (account instanceof User) ? ((User) account).getName()
+                : (account instanceof Artist) ? ((Artist) account).getName()
+                : ((Admin) account).getName(); // Handle Admin here
         Label welcomeLabel = new Label("Welcome, " + name);
         welcomeLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
 
         Button profileButton = new Button("Your Profile");
-        profileButton.setStyle("-fx-font-size: 16px; -fx-background-color: #e74c3c; -fx-text-fill: white;");
-        profileButton.setOnAction(e -> {
-            if (account instanceof Artist) {
-                ArtistPage artistPage = new ArtistPage(primaryStage, (Artist) account);
-                primaryStage.setScene(artistPage.getScene());
-            } else {
-                UserPage userPage = new UserPage(primaryStage, (User) account);
-                primaryStage.setScene(new Scene(userPage.getUserLayout(), 800, 600));
-            }
-        });
+        styleButton(profileButton, "#e74c3c");
+        profileButton.setOnAction(e -> navigateToProfilePage());
 
-        header.getChildren().addAll(welcomeLabel, profileButton);
-        header.setAlignment(Pos.CENTER_RIGHT);
+        Button logoutButton = new Button("Log Out");
+        styleButton(logoutButton, "#34495e");
+        logoutButton.setOnAction(e -> navigateToLoginPage());
 
-        // Search bar
+        header.getChildren().addAll(welcomeLabel, profileButton, logoutButton);
+        return header;
+    }
+
+    private void styleButton(Button button, String color) {
+        button.setStyle("-fx-font-size: 16px; -fx-background-color: " + color + "; -fx-text-fill: white;");
+    }
+
+    private void navigateToProfilePage() {
+        if (account instanceof Artist) {
+            ArtistPage artistPage = new ArtistPage(primaryStage, (Artist) account);
+            primaryStage.setScene(artistPage.getScene());
+        } else if (account instanceof User) {
+            UserPage userPage = new UserPage(primaryStage, (User) account);
+            primaryStage.setScene(new Scene(userPage.getUserLayout(), 800, 600));
+        } else if (account instanceof Admin) {
+            AdminPage adminPage = new AdminPage(primaryStage, (Admin) account); // Admin page navigation
+            primaryStage.setScene(adminPage.getScene());
+        }
+    }
+
+    private void navigateToLoginPage() {
+        LoginPage loginPage = new LoginPage(primaryStage);
+        primaryStage.setScene(loginPage.getScene());
+    }
+
+    private HBox createSearchBar() {
         HBox searchBar = new HBox(10);
+        searchBar.setAlignment(Pos.CENTER);
+
         TextField searchField = new TextField();
         searchField.setPromptText("Search for artist, song, or album...");
         searchField.setPrefWidth(300);
 
         Button searchButton = new Button("Search");
-        searchButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+        styleButton(searchButton, "#2ecc71");
 
         ListView<String> searchResults = new ListView<>();
 
@@ -76,19 +122,20 @@ public class HomePage {
         });
 
         searchBar.getChildren().addAll(searchField, searchButton);
-        searchBar.setAlignment(Pos.CENTER);
+        return searchBar;
+    }
 
-        topSection.getChildren().addAll(header, searchBar);
+    private VBox createBodySection() {
+        VBox bodySection = new VBox(20);
+        bodySection.setStyle("-fx-padding: 20px;");
 
-        // Body
-        VBox body = new VBox(20);
-        body.setStyle("-fx-padding: 20px;");
-        body.getChildren().addAll(new Label("🔥 Trending Songs"), searchResults);
+        Label trendingLabel = new Label("🔥 Trending Songs");
+        trendingLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        homeLayout.setTop(topSection);
-        homeLayout.setCenter(body);
-        homeLayout.setStyle("-fx-background-color: #f1c40f;");
+        ListView<String> searchResults = new ListView<>();
+        bodySection.getChildren().addAll(trendingLabel, searchResults);
 
+        return bodySection;
     }
 
     private void performSearch(String query, ListView<String> searchResults) {

@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import org.example.musicapp.models.User;
 import org.example.musicapp.models.Artist;
+import org.example.musicapp.models.Admin; // ✅ ADD THIS LINE
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -16,15 +17,17 @@ public class LoginPage {
 
     private Stage primaryStage;
     private VBox loginLayout;
+    private Scene loginScene;
 
     public LoginPage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.loginLayout = new VBox(15);
         setupLoginPage();
+        this.loginScene = new Scene(loginLayout, 400, 300);
     }
 
-    public VBox getLoginLayout() {
-        return loginLayout;
+    public Scene getScene() {
+        return loginScene;
     }
 
     private void setupLoginPage() {
@@ -59,12 +62,11 @@ public class LoginPage {
 
         if (userData != null) {
             String storedHashedPassword = userData[3];
-
             if (storedHashedPassword.equals(enteredHashedPassword)) {
                 String name = userData[0];
                 int age = Integer.parseInt(userData[1]);
                 String email = userData[2];
-                String role = userData[4];
+                String role = userData[4].trim(); // ✅ Trim to remove whitespace
 
                 Object account;
 
@@ -72,6 +74,8 @@ public class LoginPage {
                     account = new User(name, age, email, storedHashedPassword, role);
                 } else if ("Artist".equalsIgnoreCase(role)) {
                     account = new Artist(name, age, email, storedHashedPassword, role);
+                } else if ("Admin".equalsIgnoreCase(role)) {
+                    account = new Admin(name, age, email, storedHashedPassword, role); // ✅ Added admin
                 } else {
                     showAlert("Invalid role type.");
                     return;
@@ -91,8 +95,7 @@ public class LoginPage {
 
     private void switchToSignUpPage() {
         SignUpPage signUpPage = new SignUpPage(primaryStage);
-        Scene signUpScene = new Scene(signUpPage.getSignUpLayout(), 400, 300);
-        primaryStage.setScene(signUpScene);
+        primaryStage.setScene(signUpPage.getScene());
     }
 
     private String hashPassword(String password) {
@@ -139,5 +142,9 @@ public class LoginPage {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public VBox getLoginLayout() {
+        return loginLayout;
     }
 }
