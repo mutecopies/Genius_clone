@@ -132,8 +132,17 @@ public class HomePage {
         Label trendingLabel = new Label("🔥 Trending Songs");
         trendingLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        ListView<String> searchResults = new ListView<>();
-        bodySection.getChildren().addAll(trendingLabel, searchResults);
+        // ListView to display trending songs
+        ListView<String> trendingSongsListView = new ListView<>();
+        trendingSongsListView.setPrefHeight(200);
+
+        // Fetch trending songs and display them
+        List<Song> trendingSongs = MusicLibrary.getAllSongs();  // Get trending songs
+        for (Song song : trendingSongs) {
+            trendingSongsListView.getItems().add(song.getTitle());
+        }
+
+        bodySection.getChildren().addAll(trendingLabel, trendingSongsListView);
 
         return bodySection;
     }

@@ -126,4 +126,11 @@ public class Artist extends Account {
         }
         return null;
     }
+    public void addSong(Song song) {
+        if (songs == null) {
+            songs = new ArrayList<>();
+        }
+        songs.add(song);
+        System.out.println("Song added: " + song.getTitle());
+    }
 }

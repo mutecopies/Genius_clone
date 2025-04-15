@@ -5,11 +5,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import org.example.musicapp.models.Artist;
 import org.example.musicapp.models.Song;
 import org.example.musicapp.models.Album;
-
-import javafx.geometry.Insets;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,9 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateAlbumPage {
+
     private Stage primaryStage;
     private Artist artist;
     private VBox createAlbumLayout;
+
+    // List to hold the newly created songs for the album
+    private List<Song> songsInAlbum = new ArrayList<>();
 
     public CreateAlbumPage(Stage primaryStage, Artist artist) {
         this.primaryStage = primaryStage;
@@ -27,8 +30,8 @@ public class CreateAlbumPage {
         setupCreateAlbumPage();
     }
 
-    public VBox getCreateAlbumLayout() {
-        return createAlbumLayout;
+    public Scene getScene() {
+        return new Scene(createAlbumLayout, 800, 600);
     }
 
     private void setupCreateAlbumPage() {
@@ -48,7 +51,7 @@ public class CreateAlbumPage {
         TextField releaseDateField = new TextField();
         releaseDateField.setPromptText("Enter release date (YYYY-MM-DD)");
 
-        // Song title input
+        // Song title input (for song creation)
         TextField songTitleField = new TextField();
         songTitleField.setPromptText("Enter song title");
 
@@ -56,21 +59,25 @@ public class CreateAlbumPage {
         Button createSongButton = new Button("Add Song to Album");
         createSongButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
 
-        // List to hold the newly created songs for the album
-        List<Song> songsInAlbum = new ArrayList<>();
+        // ListView to display the songs added to the album
+        ListView<String> songListView = new ListView<>();
+        songListView.setPrefHeight(150);
+        songListView.getItems().add("No songs added yet");
 
         // When the "Add Song to Album" button is clicked
         createSongButton.setOnAction(e -> {
-            String songTitle = songTitleField.getText();
-            if (!songTitle.isEmpty()) {
-                // Create a new song and add it to the album's song list
-                Song newSong = new Song(songTitle);
-                songsInAlbum.add(newSong);
-                songTitleField.clear();  // Clear the song title field after adding it
-                showAlert("Song Added", "Song '" + songTitle + "' added to the album.");
-            } else {
-                showAlert("Error", "Please enter a song title.");
+            // Create a new song
+            Song newSong = new Song(songTitleField.getText(), "", new ArrayList<>(), "Unknown", new ArrayList<>(), "Unknown");
+            songsInAlbum.add(newSong);
+
+            // Add song to the ListView to show the added songs
+            songListView.getItems().clear();
+            for (Song song : songsInAlbum) {
+                songListView.getItems().add(song.getTitle());
             }
+
+            // Clear song title field for next song creation
+            songTitleField.clear();
         });
 
         // Create album button
@@ -107,7 +114,7 @@ public class CreateAlbumPage {
 
         // Add elements to the layout
         createAlbumLayout.getChildren().addAll(
-                titleLabel, albumTitleField, releaseDateField, songTitleField, createSongButton, createAlbumButton
+                titleLabel, albumTitleField, releaseDateField, songTitleField, createSongButton, songListView, createAlbumButton
         );
     }
 

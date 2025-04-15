@@ -13,6 +13,7 @@ public class Song {
     private int viewsCount;
     private List<Comment> comments;
     private String releaseDate;
+    private List<EditRequest> editRequests;  // List to store lyric edit requests
 
     // Constructor that accepts only the title for trending songs
     public Song(String title) {
@@ -25,6 +26,7 @@ public class Song {
         this.viewsCount = 0;  // Default view count
         this.comments = new ArrayList<>();  // Empty comment list
         this.releaseDate = "Unknown";  // Default release date
+        this.editRequests = new ArrayList<>();  // Initialize the list of edit requests
     }
 
     // Regular constructor with all attributes (for songs with more details)
@@ -38,6 +40,7 @@ public class Song {
         this.album = null;  // Default is not in an album
         this.viewsCount = 0;
         this.comments = new ArrayList<>();
+        this.editRequests = new ArrayList<>();
     }
 
     // Getter for the title
@@ -45,7 +48,7 @@ public class Song {
         return title;
     }
 
-    // Setters and getters for the rest of the attributes
+    // Getters and Setters for the rest of the attributes
     public String getLyrics() {
         return lyrics;
     }
@@ -101,7 +104,7 @@ public class Song {
 
     // Method to add a comment to the song
     public void addComment(Comment comment) {
-        comments.add(comment);
+        comments.add(comment); // Adds the comment to the song's comment list
         System.out.println("Comment added to " + title + ": " + comment.getText());
     }
 
@@ -113,6 +116,20 @@ public class Song {
 
         for (Comment comment : sortedComments) {
             System.out.println("- " + comment.getText() + " (by " + comment.getUser().getUsername() + ")");
+        }
+    }
+
+    // Method to add an edit request for the song's lyrics
+    public void addEditRequest(EditRequest request) {
+        editRequests.add(request); // Adds the edit request to the song's list
+        System.out.println("Edit request added for " + title + ": " + request.getNewLyrics());
+    }
+
+    // Method to view all edit requests (sorted by date)
+    public void viewEditRequests() {
+        System.out.println("Edit Requests for " + title + ":");
+        for (EditRequest request : editRequests) {
+            System.out.println("- " + request.getOldLyrics() + " to " + request.getNewLyrics() + " (by " + request.getUser().getUsername() + ")");
         }
     }
 

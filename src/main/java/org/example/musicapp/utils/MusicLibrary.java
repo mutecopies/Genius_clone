@@ -3,8 +3,6 @@ package org.example.musicapp.utils;
 import org.example.musicapp.models.Artist;
 import org.example.musicapp.models.Album;
 import org.example.musicapp.models.Song;
-import org.example.musicapp.models.Comment;
-import org.example.musicapp.models.User;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -32,20 +30,24 @@ public class MusicLibrary {
     // Sample method to get songs
     public static List<Song> getAllSongs() {
         List<Song> songs = new ArrayList<>();
-        // Example songs, replace with actual data
+        // Replace with actual song names and their details
 
-        // For trending songs, use the constructor with just the title
-        songs.add(new Song("Trending Song 1"));
-        songs.add(new Song("Trending Song 2"));
+        songs.add(new Song("Blinding Lights")); // New Song 1
+        songs.add(new Song("Levitating"));      // New Song 2
+        songs.add(new Song("Save Your Tears")); // New Song 3
 
-        // For songs with full details, use the constructor that accepts all attributes
+        // Adding full song details
         List<Artist> song1Artists = new ArrayList<>();
-        song1Artists.add(new Artist("Artist 1", 25, "artist1@email.com", "artist1", "password123"));
-        songs.add(new Song("Song 1", "Lyrics of song 1", song1Artists, "Pop", List.of("Tag1", "Tag2"), "2023-03-01"));
+        song1Artists.add(new Artist("The Weeknd", 30, "theweeknd@email.com", "theweeknd", "password123"));
+        songs.add(new Song("Blinding Lights", "Lyrics of Blinding Lights", song1Artists, "Pop", List.of("Pop", "Synthwave"), "2020-03-20"));
 
         List<Artist> song2Artists = new ArrayList<>();
-        song2Artists.add(new Artist("Artist 2", 30, "artist2@email.com", "artist2", "password456"));
-        songs.add(new Song("Song 2", "Lyrics of song 2", song2Artists, "Rock", List.of("Tag3", "Tag4"), "2023-03-05"));
+        song2Artists.add(new Artist("Dua Lipa", 27, "dualipa@email.com", "dualipa", "password456"));
+        songs.add(new Song("Levitating", "Lyrics of Levitating", song2Artists, "Pop", List.of("Pop", "Dance"), "2020-07-27"));
+
+        List<Artist> song3Artists = new ArrayList<>();
+        song3Artists.add(new Artist("The Weeknd", 30, "theweeknd@email.com", "theweeknd", "password123"));
+        songs.add(new Song("Save Your Tears", "Lyrics of Save Your Tears", song3Artists, "Pop", List.of("Pop", "Synthwave"), "2020-03-09"));
 
         return songs;
     }

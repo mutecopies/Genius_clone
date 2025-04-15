@@ -25,7 +25,6 @@ public class AdminPage {
         VBox root = new VBox(15);
         root.setPadding(new Insets(20));
 
-        // Top section with logout and profile buttons
         HBox topSection = createTopSection();
 
         Label title = new Label("Admin Dashboard");
@@ -83,15 +82,19 @@ public class AdminPage {
         Label welcomeLabel = new Label("Welcome, Admin: " + admin.getName());
         welcomeLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
 
+        Button backButton = new Button("← Back to Homepage");
+        styleButton(backButton, "#2980b9");
+        backButton.setOnAction(e -> goToHomepage());
+
         Button profileButton = new Button("Your Profile");
-        styleButton(profileButton, "#e74c3c");
+        styleButton(profileButton, "#e67e22");
         profileButton.setOnAction(e -> navigateToProfilePage());
 
         Button logoutButton = new Button("Log Out");
         styleButton(logoutButton, "#34495e");
         logoutButton.setOnAction(e -> logout());
 
-        topSection.getChildren().addAll(welcomeLabel, profileButton, logoutButton);
+        topSection.getChildren().addAll(welcomeLabel, backButton, profileButton, logoutButton);
         return topSection;
     }
 
@@ -101,11 +104,16 @@ public class AdminPage {
 
     private void navigateToProfilePage() {
         System.out.println("Navigating to Admin Profile Page...");
-        // Implement your admin profile page here
+        // TODO: Add real profile page later if needed
     }
 
     private void logout() {
         System.out.println("Logging out and going back to Login Page...");
-        // Implement logout and navigation to login page
+        primaryStage.setScene(new LoginPage(primaryStage).getScene());
+    }
+
+    private void goToHomepage() {
+        System.out.println("Navigating to Homepage...");
+        primaryStage.setScene(new HomePage(primaryStage, admin).getScene());
     }
 }

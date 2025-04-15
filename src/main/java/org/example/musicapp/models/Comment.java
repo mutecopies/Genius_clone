@@ -21,9 +21,19 @@ public class Comment implements Comparable<Comment> {
         return text;
     }
 
+    // Set the text of the comment
+    public void setText(String text) {
+        this.text = text;
+    }
+
     // Get the user who made the comment
     public User getUser() {
         return user;
+    }
+
+    // Set the user who made the comment
+    public void setUser(User user) {
+        this.user = user;
     }
 
     // Get the username of the commenter
@@ -41,6 +51,11 @@ public class Comment implements Comparable<Comment> {
         return song;
     }
 
+    // Set the song associated with the comment
+    public void setSong(Song song) {
+        this.song = song;
+    }
+
     // Method to sort comments by date (latest first)
     @Override
     public int compareTo(Comment otherComment) {
@@ -49,6 +64,7 @@ public class Comment implements Comparable<Comment> {
 
     @Override
     public String toString() {
-        return getUsername() + " (" + date + "): " + text;
+        String songTitle = (song != null) ? song.getTitle() : "Unknown Song";
+        return getUsername() + " (" + date + "): " + text + " - on song: " + songTitle;
     }
 }
