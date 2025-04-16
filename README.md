@@ -48,15 +48,10 @@ This is a desktop application inspired by Genius.com, where users can view and c
 ---
 
 ## 📸 Demo
-HOMEPAGE
-![image](https://github.com/user-attachments/assets/a0ea3b9e-a53c-40ac-90fa-83bf6d5fe705) 
-
+![image](https://github.com/user-attachments/assets/a0ea3b9e-a53c-40ac-90fa-83bf6d5fe705)
 
 USER PAGE
 ![image](https://github.com/user-attachments/assets/82cecb29-e31a-4bf3-96bd-f7f1ffc158e3)
-
-
-
 ---
 
 ## 📦 Usage
@@ -65,3 +60,23 @@ USER PAGE
    ```bash
    git clone https://github.com/your-username/genius-clone-javafx.git
    cd genius-clone-javafx
+---
+
+## 🚀 How to Run (JavaFX)
+
+### 📋 Prerequisites
+
+- Java JDK 17+
+- JavaFX SDK (Download from [gluonhq.com](https://gluonhq.com/products/javafx/))
+- IntelliJ IDEA or VS Code
+
+---
+
+### 🛠️ JavaFX Setup in IntelliJ
+
+1. **Download JavaFX SDK** and extract it.
+2. Go to `File > Project Structure > Libraries` → Add the `/lib` folder from the JavaFX SDK.
+3. Open `Run > Edit Configurations` and in the **VM Options** field, add:
+
+   ```bash
+   --module-path "PATH_TO_FX_LIB" --add-modules javafx.controls,javafx.fxml
