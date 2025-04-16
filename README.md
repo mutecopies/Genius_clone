@@ -48,7 +48,13 @@ This is a desktop application inspired by Genius.com, where users can view and c
 ---
 
 ## 📸 Demo
-![image](https://github.com/user-attachments/assets/a0ea3b9e-a53c-40ac-90fa-83bf6d5fe705)
+HOMEPAGE
+![image](https://github.com/user-attachments/assets/a0ea3b9e-a53c-40ac-90fa-83bf6d5fe705) 
+
+
+USER PAGE
+![image](https://github.com/user-attachments/assets/82cecb29-e31a-4bf3-96bd-f7f1ffc158e3)
+
 
 
 ---
