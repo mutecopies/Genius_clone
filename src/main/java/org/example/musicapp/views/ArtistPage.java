@@ -80,7 +80,8 @@ public class ArtistPage {
             albumLink.setStyle("-fx-text-fill: #3498db;");
             albumLink.setOnAction(e -> {
                 // Navigate to the album page when clicked
-                AlbumPage albumPage = new AlbumPage(primaryStage, album);
+                AlbumPage albumPage = new AlbumPage(primaryStage, album, album.getArtist());
+
                 primaryStage.setScene(albumPage.getScene());
             });
             albumList.getChildren().add(albumLink);
