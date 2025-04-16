@@ -25,14 +25,39 @@ This is a desktop application inspired by Genius.com, where users can view and c
 
 ## 🚀 Features
 
-- 🔐 Secure login & signup system with password hashing (SHA-256)
-- 👥 Three types of users: **User**, **Artist**, and **Admin**
-- 🎵 Artists can upload songs, create albums, and manage lyrics
-- 💬 Users can comment on songs and suggest lyric edits
-- ✅ Admins verify artists and approve lyric edits
-- 📁 Data stored persistently in text and JSON files
-- 🎨 Clean and interactive UI using JavaFX
-- 🗂 Organized project structure with clear class responsibilities
+### ✅ **User Authentication**
+- Sign up and log in as **User**, **Artist**, or **Admin**
+- Role-based navigation and actions
+- Login info persisted in files
+
+### 👤 **User Role**
+- View song lyrics
+- Search for songs, artists, and albums
+- Follow artists
+- Comment on songs
+- Suggest lyric edits
+- View profile (name, followed artists, comments)
+
+### 🎤 **Artist Role**
+- Create new **songs** and **albums**
+- Add **lyrics** to songs
+- View and **approve/reject lyric edit requests**
+- View their own albums and songs
+
+### 🛡️ **Admin Role**
+- Approve or reject **pending artist registrations**
+- Review **user-submitted lyric edits** for inactive artists
+
+### 📚 **Albums & Songs**
+- Artists can:
+  - Create albums (with title, release date)
+  - Add songs to albums (with tracklist order)
+- View album pages with:
+  - Title, artist, release date, full tracklist
+  - Clickable songs that open a **Song Page** to view lyrics
+- Each song has:
+  - Lyrics display
+  - Comment section
 
 ---
 
