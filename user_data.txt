@@ -1,0 +1,33 @@
+User: OK
+Followed Artists:
+Artist 1
+---------
+User: OK
+Followed Artists:
+Artist 1
+Artist 2
+---------
+User: OK
+Followed Artists:
+Artist 2
+---------
+User: OK
+Followed Artists:
+Artist 1
+---------
+User: OK
+Followed Artists:
+Artist 1
+---------
+User: OK
+Followed Artists:
+Artist 1
+---------
+User: OK
+Followed Artists:
+Artist 1
+---------
+User: OK
+Followed Artists:
+Artist 2
+---------

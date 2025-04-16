@@ -51,70 +51,91 @@ public class CreateAlbumPage {
         TextField releaseDateField = new TextField();
         releaseDateField.setPromptText("Enter release date (YYYY-MM-DD)");
 
-        // Song title input (for song creation)
+        // Song title input
         TextField songTitleField = new TextField();
         songTitleField.setPromptText("Enter song title");
 
-        // Button to create a new song
+        // Lyrics input for the song
+        TextArea lyricsField = new TextArea();
+        lyricsField.setPromptText("Enter song lyrics");
+        lyricsField.setPrefRowCount(4);
+
+        // Add song button
         Button createSongButton = new Button("Add Song to Album");
         createSongButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
 
-        // ListView to display the songs added to the album
         ListView<String> songListView = new ListView<>();
         songListView.setPrefHeight(150);
         songListView.getItems().add("No songs added yet");
 
-        // When the "Add Song to Album" button is clicked
         createSongButton.setOnAction(e -> {
-            // Create a new song
-            Song newSong = new Song(songTitleField.getText(), "", new ArrayList<>(), "Unknown", new ArrayList<>(), "Unknown");
-            songsInAlbum.add(newSong);
+            String songTitle = songTitleField.getText().trim();
+            String lyrics = lyricsField.getText().trim();
 
-            // Add song to the ListView to show the added songs
-            songListView.getItems().clear();
-            for (Song song : songsInAlbum) {
-                songListView.getItems().add(song.getTitle());
+            if (!songTitle.isEmpty() && !lyrics.isEmpty()) {
+                Song newSong = new Song(songTitle, lyrics, new ArrayList<>(), "Unknown", new ArrayList<>(), "Unknown");
+                songsInAlbum.add(newSong);
+
+                songListView.getItems().clear();
+                for (Song song : songsInAlbum) {
+                    songListView.getItems().add(song.getTitle());
+                }
+
+                songTitleField.clear();
+                lyricsField.clear();
+            } else {
+                showAlert("Error", "Please enter both song title and lyrics.");
             }
-
-            // Clear song title field for next song creation
-            songTitleField.clear();
         });
 
         // Create album button
         Button createAlbumButton = new Button("Create Album");
-        createAlbumButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+        createAlbumButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
         createAlbumButton.setOnAction(e -> {
             String albumTitle = albumTitleField.getText();
             String releaseDate = releaseDateField.getText();
 
             if (!albumTitle.isEmpty() && !releaseDate.isEmpty() && !songsInAlbum.isEmpty()) {
                 try {
-                    // Parse the release date
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date parsedReleaseDate = formatter.parse(releaseDate);
+                    java.util.Date parsedDate = formatter.parse(releaseDate);
 
-                    // Create a new album with the provided details and add the songs
-                    Album newAlbum = new Album(albumTitle, artist, parsedReleaseDate);
+                    Album newAlbum = new Album(albumTitle, artist, parsedDate);
                     for (Song song : songsInAlbum) {
                         newAlbum.addSong(song);
                     }
 
-                    artist.addAlbum(newAlbum);  // Add the album to the artist
+                    artist.addAlbum(newAlbum);
 
-                    // Navigate back to artist profile after album creation
+                    // Go back to artist page
                     ArtistPage artistPage = new ArtistPage(primaryStage, artist);
                     primaryStage.setScene(artistPage.getScene());
-                } catch (ParseException parseException) {
-                    showAlert("Error", "Invalid date format. Please use YYYY-MM-DD.");
+                } catch (ParseException ex) {
+                    showAlert("Error", "Invalid date format. Use YYYY-MM-DD.");
                 }
             } else {
                 showAlert("Error", "Please fill in all fields and add at least one song.");
             }
         });
 
-        // Add elements to the layout
+        // Back button
+        Button backButton = new Button("← Back to Artist Page");
+        backButton.setStyle("-fx-background-color: gray; -fx-text-fill: white;");
+        backButton.setOnAction(e -> {
+            ArtistPage artistPage = new ArtistPage(primaryStage, artist);
+            primaryStage.setScene(artistPage.getScene());
+        });
+
         createAlbumLayout.getChildren().addAll(
-                titleLabel, albumTitleField, releaseDateField, songTitleField, createSongButton, songListView, createAlbumButton
+                titleLabel,
+                albumTitleField,
+                releaseDateField,
+                songTitleField,
+                lyricsField,
+                createSongButton,
+                songListView,
+                createAlbumButton,
+                backButton
         );
     }
 
