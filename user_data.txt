@@ -50,3 +50,11 @@ User: OK
 Followed Artists:
 Artist 1
 ---------
+User: OK
+Followed Artists:
+Artist 1
+---------
+User: OK
+Followed Artists:
+Artist 1
+---------
