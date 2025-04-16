@@ -91,3 +91,14 @@ _ _ _
 - JSON-based data saving implemented  
 - 🔐 Bonus: Secure login using password hashing (SHA-256)  
 - 🎨 Bonus: Full JavaFX integration for UI
+
+## 🙌 Credits
+
+- Developed by [mutecopies](https://github.com/mutecopies)
+- JavaFX – Used for building the user interface  
+- Gson – Used for saving and reading data in JSON format  
+- SHA-256 – Used for hashing passwords securely  
+- Genius.com – Inspiration for the app's design and functionality  
+- IntelliJ IDEA – Primary IDE used for development  
+- [OpenJDK](https://openjdk.org/) – Java Development Kit  
+
