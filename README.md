@@ -14,7 +14,6 @@ A desktop application inspired by [Genius.com](https://genius.com), built in Jav
 - [👥 Roles and Permissions](#-roles-and-permissions)
 - [📝 Changelog](#-changelog)
 - [👏 Credits](#-credits)
-- [📬 Contact](#-contact)
 
 ---
 
@@ -80,3 +79,15 @@ USER PAGE
 
    ```bash
    --module-path "PATH_TO_FX_LIB" --add-modules javafx.controls,javafx.fxml
+_ _ _
+
+## 📜 Changelog
+
+### v1.0
+
+- Initial release  
+- Role-based system (`User`, `Artist`, `Admin`)  
+- JavaFX user interface completed  
+- JSON-based data saving implemented  
+- 🔐 Bonus: Secure login using password hashing (SHA-256)  
+- 🎨 Bonus: Full JavaFX integration for UI
