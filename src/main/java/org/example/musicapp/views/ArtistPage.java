@@ -24,7 +24,11 @@ public class ArtistPage {
     }
 
     public Scene getScene() {
-        return new Scene(artistLayout, 800, 600);
+        // Wrap the artistLayout inside a ScrollPane to enable scrolling
+        ScrollPane scrollPane = new ScrollPane(artistLayout);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        return new Scene(scrollPane, 800, 600);
     }
 
     private void setupArtistProfilePage() {
@@ -81,7 +85,6 @@ public class ArtistPage {
             albumLink.setOnAction(e -> {
                 // Navigate to the album page when clicked
                 AlbumPage albumPage = new AlbumPage(primaryStage, album, album.getArtist());
-
                 primaryStage.setScene(albumPage.getScene());
             });
             albumList.getChildren().add(albumLink);
@@ -89,7 +92,7 @@ public class ArtistPage {
 
         // Create New Song Button
         Button createSongButton = new Button("Create New Song");
-        createSongButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+        createSongButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px;");
         createSongButton.setOnAction(e -> {
             // Navigate to the Create Song page
             CreateSongPage createSongPage = new CreateSongPage(primaryStage, artist);
@@ -98,7 +101,7 @@ public class ArtistPage {
 
         // Create New Album Button
         Button createAlbumButton = new Button("Create New Album");
-        createAlbumButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+        createAlbumButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px;");
         createAlbumButton.setOnAction(e -> {
             // Navigate to the Create Album page
             CreateAlbumPage createAlbumPage = new CreateAlbumPage(primaryStage, artist);

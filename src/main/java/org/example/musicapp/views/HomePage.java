@@ -6,7 +6,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ import org.example.musicapp.database.UserDatabase;
 public class HomePage {
 
     private Stage primaryStage;
-    private Object account; // Accepts User, Artist, or Admin
+    private Object account;
     private BorderPane homeLayout;
     private ListView<String> searchResultsListView;
 
@@ -38,10 +37,13 @@ public class HomePage {
 
     private void initializeHomePage() {
         VBox topSection = createTopSection();
-        VBox bodySection = createBodySection();
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(createBodySection());
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background: transparent;");
 
         homeLayout.setTop(topSection);
-        homeLayout.setCenter(bodySection);
+        homeLayout.setCenter(scrollPane);
         homeLayout.setStyle("-fx-background-color: #f1c40f;");
     }
 
@@ -78,33 +80,10 @@ public class HomePage {
         return header;
     }
 
-    private void navigateToProfilePage() {
-        if (account instanceof Artist) {
-            ArtistPage artistPage = new ArtistPage(primaryStage, (Artist) account);
-            primaryStage.setScene(artistPage.getScene());
-        } else if (account instanceof User) {
-            List<Song> songs = MusicLibrary.getAllSongs();
-            if (!songs.isEmpty()) {
-                UserPage userPage = new UserPage(primaryStage, (User) account, songs);
-                primaryStage.setScene(userPage.getScene());
-            } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "No songs available to display in the profile page.", ButtonType.OK);
-                alert.showAndWait();
-            }
-        } else if (account instanceof Admin) {
-            AdminPage adminPage = new AdminPage(primaryStage, (Admin) account);
-            primaryStage.setScene(adminPage.getScene());
-        }
-    }
-
-    private void navigateToLoginPage() {
-        LoginPage loginPage = new LoginPage(primaryStage);
-        primaryStage.setScene(loginPage.getScene());
-    }
-
     private HBox createSearchBar() {
         HBox searchBar = new HBox(10);
         searchBar.setAlignment(Pos.CENTER);
+        searchBar.setStyle("-fx-padding: 10px;");
 
         TextField searchField = new TextField();
         searchField.setPromptText("Search for artist, song, or album...");
@@ -125,40 +104,32 @@ public class HomePage {
     }
 
     private VBox createBodySection() {
-        VBox bodySection = new VBox(20);
-        bodySection.setStyle("-fx-padding: 20px;");
+        VBox bodySection = new VBox(30);
+        bodySection.setStyle("-fx-padding: 30px;");
+        bodySection.setAlignment(Pos.TOP_CENTER);
 
+        // 🔥 Trending Songs
         Label trendingLabel = new Label("🔥 Trending Songs");
-        trendingLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        trendingLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         ListView<String> trendingSongsListView = new ListView<>();
-        trendingSongsListView.setPrefHeight(150);
+        trendingSongsListView.setPrefHeight(120);
+        MusicLibrary.getAllSongs().forEach(song -> trendingSongsListView.getItems().add(song.getTitle()));
 
-        List<Song> trendingSongs = MusicLibrary.getAllSongs();
-        for (Song song : trendingSongs) {
-            trendingSongsListView.getItems().add(song.getTitle());
-        }
-
-        bodySection.getChildren().addAll(trendingLabel, trendingSongsListView);
-
-        // Initialize the search results list view
-        searchResultsListView = new ListView<>();
+        // 🔍 Search Results
         Label searchResultsLabel = new Label("🔍 Search Results");
-        searchResultsLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        bodySection.getChildren().addAll(searchResultsLabel, searchResultsListView);
+        searchResultsLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        // Follow Artists Section
+        searchResultsListView = new ListView<>();
+        searchResultsListView.setPrefHeight(150);
+
+        // 🎶 Follow Artists
         Label followArtistsLabel = new Label("🎶 Follow Artists");
-        followArtistsLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-        bodySection.getChildren().add(followArtistsLabel);
+        followArtistsLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         ListView<Artist> artistListView = new ListView<>();
         artistListView.setPrefHeight(200);
-
-        List<Artist> allArtists = MusicLibrary.getAllArtists();
-        for (Artist artist : allArtists) {
-            artistListView.getItems().add(artist);
-        }
+        MusicLibrary.getAllArtists().forEach(artistListView.getItems()::add);
 
         artistListView.setCellFactory(param -> new ListCell<Artist>() {
             @Override
@@ -169,15 +140,23 @@ public class HomePage {
                     setGraphic(null);
                 } else {
                     Button followButton = new Button("Follow");
-                    followButton.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px;");
+                    followButton.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 14px;");
                     followButton.setOnAction(e -> followArtist(artist));
-                    HBox artistBox = new HBox(10, new Label(artist.getName()), followButton);
+
+                    Label artistLabel = new Label(artist.getName());
+                    artistLabel.setStyle("-fx-font-size: 14px;");
+                    HBox artistBox = new HBox(15, artistLabel, followButton);
+                    artistBox.setAlignment(Pos.CENTER_LEFT);
                     setGraphic(artistBox);
                 }
             }
         });
 
-        bodySection.getChildren().add(artistListView);
+        bodySection.getChildren().addAll(
+                trendingLabel, trendingSongsListView,
+                searchResultsLabel, searchResultsListView,
+                followArtistsLabel, artistListView
+        );
 
         return bodySection;
     }
@@ -221,10 +200,42 @@ public class HomePage {
             if (song.getTitle().toLowerCase().contains(query)) {
                 searchResultsListView.getItems().add("Song: " + song.getTitle());
             }
+
+            // اضافه کردن هنرمندان هر آهنگ
+            List<Artist> songArtists = song.getArtists();
+            for (Artist artist : songArtists) {
+                if (artist.getName().toLowerCase().contains(query)) {
+                    searchResultsListView.getItems().add("Artist in Song: " + artist.getName());
+                }
+            }
         }
 
         if (searchResultsListView.getItems().isEmpty()) {
             searchResultsListView.getItems().add("No results found.");
         }
+    }
+
+    private void navigateToProfilePage() {
+        if (account instanceof Artist) {
+            ArtistPage artistPage = new ArtistPage(primaryStage, (Artist) account);
+            primaryStage.setScene(artistPage.getScene());
+        } else if (account instanceof User) {
+            List<Song> songs = MusicLibrary.getAllSongs();
+            if (!songs.isEmpty()) {
+                UserPage userPage = new UserPage(primaryStage, (User) account, songs);
+                primaryStage.setScene(userPage.getScene());
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "No songs available to display in the profile page.", ButtonType.OK);
+                alert.showAndWait();
+            }
+        } else if (account instanceof Admin) {
+            AdminPage adminPage = new AdminPage(primaryStage, (Admin) account);
+            primaryStage.setScene(adminPage.getScene());
+        }
+    }
+
+    private void navigateToLoginPage() {
+        LoginPage loginPage = new LoginPage(primaryStage);
+        primaryStage.setScene(loginPage.getScene());
     }
 }
