@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import org.example.musicapp.models.Album;
 import org.example.musicapp.models.Song;
+import org.example.musicapp.models.Artist;
 
 import java.text.SimpleDateFormat;
 
@@ -14,11 +15,13 @@ public class AlbumPage {
 
     private Stage primaryStage;
     private Album album;
+    private Artist artist;
     private VBox albumLayout;
 
-    public AlbumPage(Stage primaryStage, Album album) {
+    public AlbumPage(Stage primaryStage, Album album, Artist artist) {
         this.primaryStage = primaryStage;
         this.album = album;
+        this.artist = artist;
         this.albumLayout = new VBox(20);
         setupAlbumPage();
     }
@@ -32,16 +35,16 @@ public class AlbumPage {
         Label titleLabel = new Label("Album: " + album.getTitle());
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        // Artist Info Section
-        Label artistLabel = new Label("Artist: " + (album.getArtist() != null ? album.getArtist().getName() : "Unknown Artist"));
+        // Artist Info
+        Label artistLabel = new Label("Artist: " + (artist != null ? artist.getName() : "Unknown Artist"));
         artistLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // Release Date Section
+        // Release Date
         SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
         Label releaseDateLabel = new Label("Release Date: " + formatter.format(album.getReleaseDate()));
         releaseDateLabel.setStyle("-fx-font-size: 16px;");
 
-        // Tracklist Section
+        // Tracklist
         Label tracklistLabel = new Label("Tracklist");
         tracklistLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
@@ -56,13 +59,22 @@ public class AlbumPage {
             }
         }
 
-        // Add all components to layout
+        // Back Button
+        Button backButton = new Button("← Back to Artist Page");
+        backButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px;");
+        backButton.setOnAction(e -> {
+            ArtistPage artistPage = new ArtistPage(primaryStage, artist);
+            primaryStage.setScene(artistPage.getScene());
+        });
+
+        // Layout
         albumLayout.getChildren().addAll(
                 titleLabel,
                 artistLabel,
                 releaseDateLabel,
                 tracklistLabel,
-                tracklistBox
+                tracklistBox,
+                backButton
         );
 
         albumLayout.setAlignment(Pos.TOP_CENTER);

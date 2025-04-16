@@ -27,7 +27,7 @@ public class UserPage {
         this.user = user;
         this.songs = songs;
         if (!songs.isEmpty()) {
-            this.selectedSong = songs.get(0); // default selection
+            this.selectedSong = songs.get(0); // Default selection
         }
         setupUserPage();
     }
@@ -46,6 +46,44 @@ public class UserPage {
         titleLabel.setFont(Font.font("Arial Black", 28));
         titleLabel.setTextFill(Color.BLACK);
 
+        VBox userInfoBox = createUserInfoBox();
+        VBox followedArtistsBox = createFollowedArtistsBox();
+        VBox commentsBox = createCommentsBox();
+
+        ComboBox<Song> songComboBox = createSongComboBox(commentsBox);
+
+        TextField commentField = createCommentField();
+        Button submitCommentButton = createSubmitCommentButton(commentField, commentsBox);
+
+        Button backButton = createBackButton();
+
+        userLayout.getChildren().addAll(
+                titleLabel,
+                userInfoBox,
+                sectionLabel("🎵 Artists You Follow"),
+                followedArtistsBox,
+                sectionLabel("💬 Your Comments"),
+                songComboBox,
+                commentsBox,
+                commentField,
+                submitCommentButton,
+                backButton
+        );
+
+        // Wrap the userLayout in a ScrollPane to enable scrolling
+        ScrollPane scrollPane = new ScrollPane(userLayout);
+        scrollPane.setFitToHeight(true);  // Fit to the height of the screen
+        scrollPane.setFitToWidth(true);   // Fit to the width of the screen
+
+        userLayout.setStyle("-fx-background-color: #ffffff;");
+        userLayout.setPrefWidth(800);
+
+        // Setting the scene with the scrollable user layout
+        Scene scene = new Scene(scrollPane, 800, 600);
+        primaryStage.setScene(scene);
+    }
+
+    private VBox createUserInfoBox() {
         VBox userInfoBox = new VBox(10);
         userInfoBox.setPadding(new Insets(15));
         userInfoBox.setStyle("-fx-background-color: #f5f5f5; -fx-background-radius: 12px;");
@@ -57,7 +95,10 @@ public class UserPage {
 
         userInfoBox.getChildren().addAll(nameLabel, emailLabel, ageLabel);
 
-        Label followedArtistsLabel = sectionLabel("🎵 Artists You Follow");
+        return userInfoBox;
+    }
+
+    private VBox createFollowedArtistsBox() {
         VBox followedArtistsBox = new VBox(5);
         followedArtistsBox.setMaxWidth(400);
 
@@ -70,13 +111,19 @@ public class UserPage {
             }
         }
 
-        Label commentsLabel = sectionLabel("💬 Your Comments");
+        return followedArtistsBox;
+    }
+
+    private VBox createCommentsBox() {
         VBox commentsBox = new VBox(8);
         commentsBox.setPadding(new Insets(10));
         commentsBox.setMaxWidth(500);
         commentsBox.setStyle("-fx-background-color: #f9f9f9; -fx-background-radius: 10px;");
+        refreshCommentsSection(commentsBox);
+        return commentsBox;
+    }
 
-        // Song Picker (ComboBox)
+    private ComboBox<Song> createSongComboBox(VBox commentsBox) {
         ComboBox<Song> songComboBox = new ComboBox<>();
         songComboBox.getItems().addAll(songs);
         songComboBox.getSelectionModel().selectFirst();
@@ -84,13 +131,17 @@ public class UserPage {
             selectedSong = songComboBox.getValue();
             refreshCommentsSection(commentsBox);
         });
+        return songComboBox;
+    }
 
-        refreshCommentsSection(commentsBox);
-
+    private TextField createCommentField() {
         TextField commentField = new TextField();
         commentField.setPromptText("Enter your comment...");
         commentField.setStyle("-fx-padding: 10px; -fx-border-radius: 5px; -fx-border-color: #ccc;");
+        return commentField;
+    }
 
+    private Button createSubmitCommentButton(TextField commentField, VBox commentsBox) {
         Button submitCommentButton = new Button("Submit Comment");
         submitCommentButton.setStyle("-fx-font-size: 16px; -fx-background-color: #2ecc71; -fx-text-fill: white;");
         submitCommentButton.setOnAction(e -> {
@@ -102,26 +153,17 @@ public class UserPage {
                 refreshCommentsSection(commentsBox);
             }
         });
+        return submitCommentButton;
+    }
 
+    private Button createBackButton() {
         Button backButton = new Button("Back");
         backButton.setStyle("-fx-font-size: 16px; -fx-background-color: #e74c3c; -fx-text-fill: white;");
         backButton.setOnAction(e -> {
             HomePage homePage = new HomePage(primaryStage, user);
             primaryStage.setScene(homePage.getScene());
         });
-
-        userLayout.getChildren().addAll(
-                titleLabel,
-                userInfoBox,
-                followedArtistsLabel,
-                followedArtistsBox,
-                commentsLabel,
-                songComboBox,
-                commentsBox,
-                commentField,
-                submitCommentButton,
-                backButton
-        );
+        return backButton;
     }
 
     private Label sectionLabel(String text) {
@@ -155,3 +197,4 @@ public class UserPage {
         }
     }
 }
+
