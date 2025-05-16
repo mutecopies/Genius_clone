@@ -194,6 +194,7 @@ public class UserPage {
         }
         if (commentsBox.getChildren().isEmpty()) {
             commentsBox.getChildren().add(styledLabel("No comments yet for this song."));
+            commentsBox.getChildren().add(styledLabel(selectedSong.getLyrics()));
         }
     }
 }
